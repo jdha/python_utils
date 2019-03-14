@@ -144,7 +144,7 @@ def plot_areas(area):
     nmax   = np.max(area)
     
     # Create figure handle
-    fig, (ax0, ax1) = plt.subplots(nrows=2, ncols=1, figsize=(10, 10))
+    fig, (ax0, ax1) = plt.subplots(nrows=2, ncols=1, figsize=(8, 12))
 
     # Set colourmap using seaborn
     cmap = ListedColormap(sns.color_palette("Paired", nmax))
@@ -156,11 +156,10 @@ def plot_areas(area):
     plt.sca(ax0)
     sns.heatmap(area, cmap=cmap, mask=area.mask, cbar=None, 
                 vmin=1, vmax=np.max(area))
+    
     ax0.set_title('Ranked Area')
     plt.ylim((0,ny-1)), plt.xlim((0,nx-1))
 
-    # Plot histogram to show stats
-    plt.sca(ax1)
     # Generate some sequential data
     x = np.arange(1, nmax+1)
     y = np.histogram(area[area>0], bins=nmax)[0]
