@@ -143,30 +143,13 @@ def test():
     """
 
     mask_noc = np.zeros((10,28))
-    mask_noc[1:9,0]=1
-    mask_noc[1:9,7]=1
-    mask_noc[8,1]=1
-    mask_noc[7,2]=1
-    mask_noc[6,3]=1
-    mask_noc[5,4]=1
-    mask_noc[4,5]=1
-    mask_noc[5,6]=1
-    mask_noc[2,7]=1
-    mask_noc[3,6]=1
-    mask_noc[2,6]=1
-    mask_noc[1,7]=1
-    mask_noc[3,5]=1
-    mask_noc[4,4]=1
-    mask_noc[5,3]=1
-    mask_noc[6,2]=1
-    mask_noc[7,1]=1
-    mask_noc[1:9,10]=1
-    mask_noc[1:9,17]=1
-    mask_noc[1,10:17]=1
-    mask_noc[8,10:17]=1
-    mask_noc[1:9,20]=1
-    mask_noc[1,20:28]=1
-    mask_noc[8,20:28]=1
+    
+    mask_noc[1:9,0],   mask_noc[1:9,7],  mask_noc[8,1],     mask_noc[7,2]     = 1, 1, 1, 1
+    mask_noc[6,3],     mask_noc[5,4],    mask_noc[4,5],     mask_noc[5,6]     = 1, 1, 1, 1
+    mask_noc[2,7],     mask_noc[3,6],    mask_noc[2,6],     mask_noc[1,7]     = 1, 1, 1, 1
+    mask_noc[3,5],     mask_noc[4,4],    mask_noc[5,3],     mask_noc[6,2]     = 1, 1, 1, 1
+    mask_noc[7,1],     mask_noc[1:9,10], mask_noc[1:9,17],  mask_noc[1,10:17] = 1, 1, 1, 1
+    mask_noc[8,10:17], mask_noc[1:9,20], mask_noc[1,20:28], mask_noc[8,20:28] = 1, 1, 1, 1
     
     area_1 = sort_areas(mask_noc,1.,False)
     area_2 = sort_areas(mask_noc,1.,True)
