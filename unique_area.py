@@ -36,7 +36,9 @@ sns.set()
 def sort_areas(msk, val, ew_wrap):
     """
     Identify isolated areas within a mask array and rank in order
-    according to size: largest = 1.
+    according to size: largest = 1. Input array should be orientated
+    with axis 0 => latitude, axis 1 => longitude if dealing with 
+    geographic data.
 
     Args:
         msk     (numpy.ndarray): input array with isolated areas
@@ -55,7 +57,7 @@ def sort_areas(msk, val, ew_wrap):
 
     if ew_wrap:
 
-        msk = np.pad(msk, ((0, 0), (1, 1)), 'constant',
+        msk = np.pad(msk, ((1, 1), (0, 0)), 'constant',
                      constant_values=(np.nan))
 
     else:
@@ -66,6 +68,7 @@ def sort_areas(msk, val, ew_wrap):
 
     ny += 2
 
+    print msk.shape, ny, nx
     # Initialise array and starting value
     area = np.zeros((ny, nx), dtype=int)
     numb = 1
@@ -75,21 +78,21 @@ def sort_areas(msk, val, ew_wrap):
 
     # Determine unique areas and rank
     while len(iy) > 0:
-
+        print(len(iy))
         iy, ix       = iy[0:1], ix[0:1]
         area[iy, ix] = numb
 
         while len(iy) > 0:
 
             # Identify neighbouring points
-            iy = np.concatenate((iy, iy+1, iy+1, iy  , iy  ))
+            iy = np.concatenate((iy, iy+1, iy-1, iy  , iy  ))
             ix = np.concatenate((ix, ix  , ix  , ix+1, ix-1))
 
-            np.where(iy>=ny, iy-ny, iy)
-            np.where(ix>=nx, ix-nx, ix)
+            iy = np.where(iy>=ny, iy-ny, iy)
+            ix = np.where(ix>=nx, ix-nx, ix)
 
-            np.where(iy<0  , iy+ny, iy)
-            np.where(ix<0  , ix+nx, ix)
+            iy = np.where(iy<0  , iy+ny, iy)
+            ix = np.where(ix<0  , ix+nx, ix)
 
             ind = np.logical_and(msk[(iy, ix)]==val, area[(iy, ix)]==0)
 
@@ -123,7 +126,7 @@ def sort_areas(msk, val, ew_wrap):
     # Remove padding before returning values
     if ew_wrap:
 
-        area = area_s[:    , 1:-1]
+        area = area_s[1:-1 , :   ]
 
     else:
 
@@ -131,6 +134,63 @@ def sort_areas(msk, val, ew_wrap):
 
     return area
 
+def test():
+    """
+    Simple test function to check things are working as they should
+    be and to provide an example.
+
+    Args:
+    """
+
+    mask_noc = np.zeros((10,28))
+    mask_noc[1:9,0]=1
+    mask_noc[1:9,7]=1
+    mask_noc[8,1]=1
+    mask_noc[7,2]=1
+    mask_noc[6,3]=1
+    mask_noc[5,4]=1
+    mask_noc[4,5]=1
+    mask_noc[5,6]=1
+    mask_noc[2,7]=1
+    mask_noc[3,6]=1
+    mask_noc[2,6]=1
+    mask_noc[1,7]=1
+    mask_noc[3,5]=1
+    mask_noc[4,4]=1
+    mask_noc[5,3]=1
+    mask_noc[6,2]=1
+    mask_noc[7,1]=1
+    mask_noc[1:9,10]=1
+    mask_noc[1:9,17]=1
+    mask_noc[1,10:17]=1
+    mask_noc[8,10:17]=1
+    mask_noc[1:9,20]=1
+    mask_noc[1,20:28]=1
+    mask_noc[8,20:28]=1
+    
+    area_1 = sort_areas(mask_noc,1.,False)
+    area_2 = sort_areas(mask_noc,1.,True)
+    
+    # Create figure handle
+    fig, (ax0, ax1, ax2) = plt.subplots(nrows=1, ncols=3, figsize=(12, 5))
+    
+    # Plot map
+    ax0.set_title('Mask Array')
+    plt.sca(ax0)
+    plt.pcolormesh(mask_noc)
+    plt.colorbar()
+    
+    ax1.set_title('Without EW wrap')
+    plt.sca(ax1)
+    plt.pcolormesh(area_1)
+    plt.colorbar()
+    
+    ax2.set_title('With EW wrap')
+    plt.sca(ax2)
+    plt.pcolormesh(area_2)
+    plt.colorbar()
+    
+                    
 def plot_areas(area):
     """
     Simple plotting of the area array created by sort_areas
