@@ -34,7 +34,17 @@ from matplotlib.colors import ListedColormap
 
 sns.set()
 
-def infill
+def infill_2D(data_in, n_iter, mask):
+    """ 
+    Read grid information and ice draft from the input files.
+
+    Args:
+        data_in (numpy.ndarray): 
+        n_iter            (int): 
+        mask    (numpy.ndarray): 
+
+    Returns:
+    """
 
 function [data_out] = infill(data_in,N,bathy)
 
